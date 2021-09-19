@@ -36,7 +36,8 @@ entry three bytes long. For instance, you would enter block 1FFF as 001FFF.
 \
 Upon connecting to the ArduinoFile, you should see a screen that looks like this:\
 \
-<img width="588" alt="Screen Shot 2021-09-19 at 12 22 54 PM" src="https://user-images.githubusercontent.com/16897189/133935045-b6b249e2-6b44-4977-a8cd-c89a2fc9f7d3.png">\
+
+<img width="409" alt="Screen Shot 2021-09-19 at 7 54 53 PM" src="https://user-images.githubusercontent.com/16897189/133947059-ad9e4e78-1bed-431b-8c66-626a50a0f993.png">
 \
 You can select an option from the menu by typing the corresponding number and pressing return.
 ### 1 - Reset Drive
@@ -105,7 +106,7 @@ Drive Tests is a submenu that contains a variety of read and write tests for tro
 NOTE: You can choose to loop any of these tests forever, in which case the ArduinoFile will show how many passes of the test have been completed so far.
 \
 \
-<img width="579" alt="Screen Shot 2021-09-19 at 4 37 46 PM" src="https://user-images.githubusercontent.com/16897189/133942276-58f68c46-5f2a-4ab8-9fc0-e930ba163e2c.png">
+<img width="412" alt="Screen Shot 2021-09-19 at 7 55 37 PM" src="https://user-images.githubusercontent.com/16897189/133947083-3a99bc9a-6fdb-42dc-b23b-ec0884ab54cb.png">
 
 #### 1 - Sequential Read
 This test sequentially reads every block on the disk and reports any errors to the user, along with an interpretation of the status bytes when the error occurred. Although the ArduinoFile reads the spare table to determine drive size automatically, you can press "n" and enter a custom drive size in blocks if you want.\
