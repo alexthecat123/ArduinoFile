@@ -34,6 +34,7 @@ unless otherwise specified.<br>
 NOTE 2: Whenever you enter a block number, you must add leading zeros to make the
 entry three bytes long. For instance, you would enter block 1FFF as 001FFF.
 <br>
+<br>
 Upon connecting to the ArduinoFile, you should see a screen that looks like this:<br>
 <br>
 <img width="409" alt="Screen Shot 2021-09-19 at 7 54 53 PM" src="https://user-images.githubusercontent.com/16897189/133947059-ad9e4e78-1bed-431b-8c66-626a50a0f993.png">
