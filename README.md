@@ -24,7 +24,7 @@ The cable for interfacing with the Widget is just a ribbon cable with a 26-pin f
 ## Software
 The code is probably really sloppy since I wrote it all in a hurry in between my college classes, but it certainly gets the job done.<br>
 <br>
-Upload the ArduinoFile.ino Arduino sketch to the Arduino using the Arduino IDE and you should be good to go! Connect to the device using a terminal program with a baud rate of 115200, one stop bit, and no parity. Once connected, you should see a main menu screen with a variety of options.
+Upload the proFileTester.ino Arduino sketch to the Arduino using the Arduino IDE and you should be good to go! Connect to the device using a terminal program with a baud rate of 115200, one stop bit, and no parity. Once connected, you should see a main menu screen with a variety of options.
 
 ## How to Use It
 
