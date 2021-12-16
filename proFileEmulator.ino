@@ -31,6 +31,8 @@ File32 disk;
 File32 scratchFile;
 File32 sourceFile;
 File32 destFile;
+File32 KVStore;
+File32 KVCache;
 FatFile rootDir;
 int fileCount = 0;
 uint16_t nonce;
@@ -40,20 +42,73 @@ uint8_t buf[4096];
 char extension[255] = ".image";
 uint32_t uptime = 0; //if this isn't originally zero, then it resets each time we do the stuff mentioned on the next line down.
 //uint32_t pointerTest = &uptime; //why is this needed to keep uptime from resetting each time we use the four bytes before data[] to store status?
+byte KVKey[20];
+byte CorrectKVKey[20] = {0x6D, 0x75, 0x6F, 0x97, 0xCD, 0xDA, 0xDE, 0x35, 0xF2, 0x4E, 0x6B, 0xA5, 0x88, 0x2F, 0x1A, 0x28, 0x34, 0x5B, 0x2D, 0xFA};
 
+const int red = 22;
+const int green = 23;
+const int blue = 24;
 
 void setup(){
+  setLEDColor(1, 0, 0);
   Serial.begin(115200); //start serial communications
   nonce = EEPROM.read(5);
   EEPROM.write(5, nonce + 1);
+  pinMode(22, OUTPUT);
+  pinMode(23, OUTPUT);
+  pinMode(24, OUTPUT);
+  pinMode(25, OUTPUT);
+  digitalWrite(25, HIGH);
 
   SD.begin(); //initialize the SD card
   rootDir.open("/");
+  if(!KVStore.open("keyvaluestore.db", O_RDWR)){
+    Serial.println(F("Key-value store not found! Creating it now..."));
+    if(!KVStore.createContiguous("keyvaluestore.db", 34864620)){
+      Serial.println(F("Failed to create key-value store! Halting..."));
+      while(1);
+    }
+    Serial.println(F("Done!"));
+  }
+
+
+  Serial.println(F("Wiping key-value cache..."));
+  rootDir.remove("keyvaluecache.db");
+  if(!KVCache.createContiguous("keyvaluecache.db", 34864620)){
+    Serial.println(F("Failed to clear key-value cache! Halting..."));
+    while(1);
+  }
+  Serial.println(F("Done!"));
+
   if(!disk.open("profile.image", O_RDWR)){
     Serial.println(F("Default drive file profile.image not found! Halting..."));
     while(1);
   }
+  /*KVCache.seekSet(532*65530);
+  KVCache.read(KVKey, 20);
+  for(int i = 0; i < 20; i++){
+    printDataNoSpace(KVKey[i]);
+  }
+  Serial.println();
+  int correct = 0;
+  for(int i = 0; i < 65535; i++){
+    Serial.println(i);
+    KVCache.seekSet(i * 532);
+    KVCache.read(KVKey, 20);
+    for(int i = 0; i < 20; i++){
+      if(KVKey[i] == CorrectKVKey[i]){
+        correct++;
+      }
+      if(correct == 20){
+        break;
+      }
+      correct = 0;
+    }
+  }
+  Serial.print("Found it at index ");
+  Serial.println(KVCache.curPosition());*/
   updateSpareTable();
+  setLEDColor(0, 1, 0);
   Serial.println(F("ArduinoFile is ready!"));
   disk.seekSet(0);
   disk.read(data, 532);
@@ -67,6 +122,7 @@ void setup(){
 }
 
 void loop() {
+  setLEDColor(0, 1, 0);
   initPins(); //set all pins to their idle states
   cli(); //disable interrupts to keep them from slowing things down
   while(readCMD() == 1); //wait for CMD to go low
@@ -79,6 +135,7 @@ void loop() {
     return;
   }
   cli();
+  setLEDColor(0, 0, 0);
   sendData(0x01); //send an 0x01 to the host
   //PORTC = PORTC & B11011111;
   setBSY(); //and lower BSY to acknowledge our presence
@@ -161,10 +218,10 @@ void loop() {
     delay(10);
     cli();
   }
-
   sei();
 
   cli(); //if we don't enable and then disable interrupts here, weird behavior results for some reason
+
 }
 
 void readDrive(){
@@ -380,6 +437,29 @@ void readDrive(){
     delay(10);
     cli();
   }
+
+  else if(commandBuffer[1] == 0xFF and commandBuffer[2] == 0xFE and commandBuffer[3] == 0xFF){ //retrieve key-value entry from the cache
+    sei();
+    KVCache.seekSet((commandBuffer[4] << 8) | (commandBuffer[5]));
+    Serial.print(F("Reading entry "));
+    printDataNoSpace(commandBuffer[4]);
+    printDataNoSpace(commandBuffer[5]);
+    Serial.println(F(" from the key-value cache..."));
+    KVCache.read(data, 532);
+    Serial.print(F("Key: "));
+    for(int i = 0; i < 20; i++){
+      printDataNoSpace(data[i]);
+    }
+    Serial.println();
+    Serial.print(F("Value: "));
+    for(int i = 20; i < 532; i++){
+      printDataNoSpace(data[i]);
+    }
+    Serial.println();
+    delay(1);
+    cli();
+  }
+
   else if(commandBuffer[1] == 0xFF and commandBuffer[2] == 0xFE and commandBuffer[3] == 0xFC){ //selector rescue
     sei();
     if(commandBuffer[4] == 0xFF and commandBuffer[5] == 0xFF){ //replace selector with a spare from the rescue folder
@@ -983,7 +1063,11 @@ bool readParity(){
   return bitRead(PINC, 5);
 }
 
-
+void setLEDColor(bool r, bool g, bool b){
+  digitalWrite(red, r);
+  digitalWrite(green, g);
+  digitalWrite(blue, b);
+}
 
 
 //the following functions just format hex data for printing over serial and are only used for debugging
