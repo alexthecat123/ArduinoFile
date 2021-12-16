@@ -1,5 +1,5 @@
 //***********************************************************************************
-//* ArduinoFile Software v1.0                                                       *
+//* ArduinoFile ProFile Diagnostic Software                                         *
 //* By: Alex Anderson-McLeod                                                        *
 //* Email address: alexelectronicsguy@gmail.com                                     *
 //***********************************************************************************
@@ -59,6 +59,45 @@ char *statusMessages[3][8] = {{"Operation Unsuccessful", "This bit is unused", "
 char acceptableHex[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 
+byte correctInfo[532] = {0x00, 0x00, 0x00, 0x22, 0xAA, 0xAA, 0x82, 0x00, 0xFF, 0xFF, 0xFF, 0x55, 0x00, 0x00, 0xFF, 0xFF,
+                        0xFF, 0xFF, 0xFF, 0xFF, 0x4E, 0xFA, 0x00, 0x16, 0xAA, 0xAA, 0x08, 0x50, 0x22, 0x4A, 0x2C, 0xF8,
+                        0x28, 0x76, 0x00, 0x1E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x38, 0x02, 0xA8,
+                        0xE2, 0x88, 0x21, 0xC0, 0x02, 0x1C, 0x22, 0x40, 0x24, 0x7C, 0x00, 0x02, 0x00, 0x00, 0x47, 0xFA,
+                        0xFF, 0xD4, 0xD7, 0xFC, 0x00, 0x00, 0x02, 0x00, 0xB5, 0xCB, 0x6E, 0x04, 0x22, 0xDA, 0x60, 0xF8,
+                        0x49, 0xFA, 0x00, 0x0C, 0xD9, 0xC0, 0x99, 0xFC, 0x00, 0x02, 0x00, 0x00, 0x4E, 0xD4, 0x43, 0xFA,
+                        0xFF, 0xC8, 0x22, 0x88, 0x43, 0xFA, 0xFF, 0xBE, 0x22, 0x97, 0xD1, 0x91, 0x04, 0x91, 0x00, 0x02,
+                        0x00, 0x00, 0x2E, 0x40, 0x9E, 0xFC, 0x01, 0x00, 0x2E, 0x3C, 0x00, 0xFF, 0xFF, 0xFF, 0x2C, 0x7C,
+                        0x00, 0x00, 0x08, 0x00, 0x31, 0xFC, 0x00, 0x01, 0x02, 0x2E, 0x61, 0x00, 0x00, 0xC0, 0x10, 0x2E,
+                        0x02, 0x0E, 0x67, 0x06, 0x31, 0xFC, 0x00, 0x03, 0x02, 0x2E, 0x4D, 0xFA, 0xFF, 0x78, 0x20, 0x4E,
+                        0xDD, 0xFC, 0x00, 0x00, 0x02, 0x00, 0xD0, 0xFC, 0x00, 0x0A, 0x3C, 0x10, 0x04, 0x46, 0x02, 0x00,
+                        0x7E, 0x08, 0x31, 0xC7, 0x02, 0x16, 0x52, 0x47, 0x0C, 0x78, 0x00, 0x03, 0x02, 0x2E, 0x66, 0x06,
+                        0x9D, 0xFC, 0x00, 0x00, 0x00, 0x14, 0x3C, 0x06, 0x6B, 0x00, 0x01, 0x18, 0x61, 0x38, 0xDC, 0xFC,
+                        0x02, 0x00, 0x04, 0x46, 0x02, 0x00, 0x52, 0x47, 0x4E, 0xFA, 0xFF, 0xEC, 0x2C, 0x00, 0x24, 0x7C,
+                        0x00, 0xFC, 0xD9, 0x01, 0x08, 0x12, 0x00, 0x01, 0x67, 0xFA, 0x20, 0x38, 0x02, 0xA8, 0x04, 0x80,
+                        0x00, 0x00, 0x80, 0x00, 0x21, 0xC0, 0x01, 0x10, 0x95, 0xCA, 0x20, 0x0B, 0x22, 0x00, 0x97, 0xCB,
+                        0x4E, 0xF9, 0x00, 0xFE, 0x00, 0x84, 0x61, 0x44, 0x30, 0x2E, 0x02, 0x06, 0x0C, 0x78, 0x00, 0x03,
+                        0x02, 0x2E, 0x66, 0x04, 0x30, 0x2E, 0x02, 0x04, 0x02, 0x40, 0x80, 0x00, 0x67, 0x2C, 0x42, 0x80,
+                        0x22, 0x4E, 0x34, 0x3C, 0x02, 0x13, 0xE4, 0x4A, 0x22, 0x19, 0xB3, 0x80, 0x51, 0xCA, 0xFF, 0xFA,
+                        0x32, 0x00, 0xE0, 0x88, 0xE0, 0x88, 0xB3, 0x40, 0x12, 0x00, 0xE0, 0x48, 0xB3, 0x00, 0x67, 0x0A,
+                        0x26, 0x7C, 0x00, 0x00, 0x29, 0xE6, 0x70, 0xFF, 0x60, 0x92, 0x4E, 0x75, 0x22, 0x07, 0x24, 0x4E,
+                        0x22, 0x4E, 0x0C, 0x78, 0x00, 0x03, 0x02, 0x2E, 0x66, 0x06, 0xD4, 0xFC, 0x00, 0x14, 0x60, 0x04,
+                        0xD2, 0xFC, 0x02, 0x00, 0x36, 0x3C, 0x00, 0x0A, 0x38, 0x3C, 0x00, 0x03, 0x24, 0x3C, 0x00, 0x90,
+                        0x00, 0x00, 0x0C, 0x81, 0x00, 0xFF, 0xFF, 0xFF, 0x67, 0x0A, 0x0C, 0x78, 0x00, 0x03, 0x02, 0x2E,
+                        0x67, 0x02, 0x61, 0x34, 0x48, 0xE7, 0x03, 0x62, 0x0C, 0x38, 0x00, 0x02, 0x01, 0xB3, 0x6E, 0x08,
+                        0x4E, 0xB9, 0x00, 0xFE, 0x00, 0x90, 0x60, 0x0E, 0x41, 0xFA, 0xFE, 0x8A, 0x26, 0x50, 0x41, 0xFA,
+                        0xFE, 0x88, 0x20, 0x50, 0x4E, 0x93, 0x4C, 0xDF, 0x46, 0xC0, 0x64, 0x0A, 0x26, 0x7C, 0x00, 0x00,
+                        0x29, 0xE6, 0x60, 0x00, 0xFF, 0x28, 0x4E, 0x75, 0x2F, 0x00, 0x2F, 0x01, 0x70, 0xF0, 0xC0, 0x01,
+                        0x02, 0x41, 0x00, 0x0F, 0xD0, 0x3B, 0x10, 0x0C, 0x1F, 0x40, 0x00, 0x03, 0x22, 0x1F, 0x20, 0x1F,
+                        0x4E, 0x75, 0x00, 0x05, 0x0A, 0x0F, 0x04, 0x09, 0x0E, 0x03, 0x08, 0x0D, 0x02, 0x07, 0x0C, 0x01,
+                        0x06, 0x0B, 0x20, 0x7C, 0x00, 0x00, 0x01, 0xB3, 0x22, 0x7C, 0x00, 0xFC, 0xC0, 0x31, 0x10, 0x11,
+                        0x6A, 0x08, 0x10, 0x10, 0x66, 0x04, 0x10, 0xBC, 0x00, 0x02, 0x41, 0xFA, 0xFE, 0x18, 0xD0, 0xFC,
+                        0x00, 0x0E, 0x31, 0xD0, 0x02, 0x10, 0x42, 0xA7, 0x42, 0xA7, 0x42, 0xA7, 0x41, 0xFA, 0xFE, 0x06,
+                        0xD0, 0xFC, 0x00, 0x08};
+
+
+
+
+
 byte num = 0x00;
 
 
@@ -75,11 +114,17 @@ String inputCommand;
 String name;
 char userInput;
 
+const int red = 22;
+const int green = 23;
+const int blue = 24;
+
 void setup(){
+  pinMode(red, OUTPUT);
+  pinMode(green, OUTPUT);
+  pinMode(blue, OUTPUT);
   Serial.begin(115200);
   Serial.setTimeout(10);
   setParallelDir('IN');
-
   DDRC = B00011101;
   initPins();
   mainMenu();
@@ -89,44 +134,51 @@ void setup(){
 
 
 bool profileRead(byte address0, byte address1, byte address2, byte retryCount=defaultRetries, byte spareThreshold=defaultSpareThreshold){
+  setLEDColor(0, 0, 0);
   bool handshakeSuccessful = profileHandshake();
   byte commandResponse = sendCommandBytes(read, address0, address1, address2, retryCount, spareThreshold);
   readStatusBytes();
   readData();
   if(handshakeSuccessful == 0){
-    Serial.println("Handshake failed!");
+    Serial.println(F("Handshake failed!"));
+    setLEDColor(1, 0, 0);
     return false;
   }
   if(commandResponse != 0x02){
-    Serial.println("Command confirmation failed!");
+    Serial.println(F("Command confirmation failed!"));
+    setLEDColor(1, 0, 0);
     return false;
   }
+  setLEDColor(1, 1, 0);
   return true;
 }
 
 
 bool profileWrite(byte address0, byte address1, byte address2, byte retryCount=defaultRetries, byte spareThreshold=defaultSpareThreshold){
+  setLEDColor(0, 0, 0);
   bool handshakeSuccessful = profileHandshake();
   byte commandResponse = sendCommandBytes(write, address0, address1, address2, retryCount, spareThreshold);
   writeData();
   readStatusBytes();
   if(handshakeSuccessful == 0){
-    Serial.println("Handshake failed!");
+    Serial.println(F("Handshake failed!"));
+    setLEDColor(1, 0, 0);
     return false;
   }
   if(commandResponse != 0x03){
-    Serial.println("Command confirmation failed!");
+    Serial.println(F("Command confirmation failed!"));
+    setLEDColor(1, 0, 0);
     return false;
   }
+  setLEDColor(1, 1, 0);
   return true;
 }
 
 
 void mainMenu(){
   clearScreen();
+  setLEDColor(0, 1, 0);
   Serial.println(F("Welcome to the ArduinoFile!"));
-  //Serial.println(F("The ProFile Electronic Data Orchestrator For Invigorating Lethargic Electronics"));
-  //Serial.println(F("Welcome to the ProFile interface adapter thing!"));
   Serial.println(F("By: Alex Anderson-McLeod"));
   Serial.println();
   Serial.println(F("1 - Reset Drive"));
@@ -145,9 +197,8 @@ void mainMenu(){
 
 void testSubMenu(){
   clearScreen();
+  setLEDColor(0, 1, 0);
   Serial.println(F("Welcome to the ArduinoFile!"));
-  //Serial.println(F("The ProFile Electronic Data Orchestrator For Invigorating Lethargic Electronics"));
-  //Serial.println(F("Welcome to the ProFile interface adapter thing!"));
   Serial.println(F("By: Alex Anderson-McLeod"));
   Serial.println();
   Serial.println(F("Drive Tests"));
@@ -215,10 +266,12 @@ void loop() {
     command = Serial.readStringUntil("\r");
     command.trim();
     if(command.equals("1") and testMenu == false){
+      setLEDColor(0, 0, 0);
       clearScreen();
       Serial.println(F("Resetting drive..."));
       resetDrive();
       Serial.print(F("Reset successful! Press return to continue..."));
+      setLEDColor(0, 1, 0);
       flushInput();
       while(!Serial.available());
       mainMenu();
@@ -299,6 +352,7 @@ void loop() {
       Serial.print(data[25]&0x0F, HEX);
       Serial.println();
       Serial.println();
+      setLEDColor(0, 1, 0);
       Serial.print(F("Press return to continue..."));
       flushInput();
       while(!Serial.available());
@@ -307,6 +361,7 @@ void loop() {
     }
     if(command.equals("3") and testMenu == false){
       clearScreen();
+      setLEDColor(0, 0, 1);
       Serial.print(F("Please enter the block number that you want to read: "));
       while(1){
         if(readSerialValue(6) == true){
@@ -406,7 +461,25 @@ void loop() {
       Serial.println();
       printStatus();
       Serial.println();
+
+      //2 and 8 places of MSB are weird
+
+      /*for(int i = 0; i < 532; i++){
+        if(data[i] != correctInfo[i]){
+          data[i] = correctInfo[i];
+        }
+        else{
+          data[i] = 0xFF;
+        }
+      }
+
+      printRawData();
+      Serial.println();*/
+
+
+
       Serial.print(F("Press return to continue..."));
+      setLEDColor(0, 1, 0);
       flushInput();
       while(!Serial.available());
       mainMenu();
@@ -416,6 +489,7 @@ void loop() {
       clearScreen();
       backupErrors = 0;
       getDriveType();
+      setLEDColor(0, 0, 1);
       Serial.println();
       Serial.println(F("Start XMODEM receiver now..."));
       delay(2000);
@@ -473,15 +547,20 @@ void loop() {
           finishTransmission();
           delay(2000);
           if(backupErrors != 0){
+            setLEDColor(1, 0, 0);
             Serial.print(F("Warning: "));
             Serial.print(backupErrors);
             Serial.print(F(" disk errors were encountered during the operation!"));
             Serial.println();
           }
+          else{
+            setLEDColor(0, 1, 0);
+          }
           Serial.println();
           Serial.println(F("XMODEM transfer complete!"));
         }
         else{
+          setLEDColor(1, 0, 0);
           Serial.println();
           Serial.println(F("Transfer timed out!"));
         }
@@ -497,6 +576,7 @@ void loop() {
     }
     if(command.equals("5") and testMenu == false){
       clearScreen();
+      setLEDColor(0, 0, 1);
       Serial.print(F("Please enter the block number that you want to write to: "));
       while(1){
         if(readSerialValue(6) == true){
@@ -530,6 +610,7 @@ void loop() {
       }
       printStatus();
       Serial.println();
+      setLEDColor(0, 1, 0);
       Serial.print(F("Press return to continue..."));
       flushInput();
       while(!Serial.available());
@@ -538,6 +619,7 @@ void loop() {
     }
 
     if(command.equals("6") and testMenu == false){
+      setLEDColor(0, 0, 1);
       clearScreen();
       confirm();
       uint16_t highestBlock = 0;
@@ -598,6 +680,7 @@ void loop() {
         delay(500);
         flushInput();
         if((currentIndex * 2) / 1064 != highestBlock and failed == false){
+          setLEDColor(1, 0, 0);
           Serial.print(F("File Size Mismatch: Drive size is "));
             printDataNoSpace((highestBlock - 1) >> 16);
             printDataNoSpace((highestBlock - 1) >> 8);
@@ -610,15 +693,18 @@ void loop() {
         }
         Serial.println();
         if(backupErrors != 0){
+          setLEDColor(1, 0, 0);
           Serial.print(F("Warning: "));
           Serial.print(backupErrors);
           Serial.print(F(" disk errors were encountered during the operation!"));
           Serial.println();
         }
         if(failed == false){
+          setLEDColor(0, 1, 0);
           Serial.println(F("Drive restore succeeded!"));
         }
         else{
+          setLEDColor(1, 0, 0);
           Serial.println(F("Drive restore failed!"));
         }
       }
@@ -634,6 +720,7 @@ void loop() {
 
     if(command.equals("7") and testMenu == false){
       clearScreen();
+      setLEDColor(0, 0, 1);
       confirm();
       uint16_t highestBlock = 0;
       if(confirmOperation == true){
@@ -653,7 +740,7 @@ void loop() {
           for(int j = 0; j < 3; j++){
             printDataNoSpace(driveSize[j]);
           }
-          Serial.print(" of ");
+          Serial.print(F(" of "));
           printDataNoSpace((highestBlock - 1) >> 16);
           printDataNoSpace((highestBlock - 1) >> 8);
           printDataNoSpace(highestBlock - 1);
@@ -686,6 +773,7 @@ void loop() {
       }
 
       Serial.println();
+      setLEDColor(0, 1, 0);
       Serial.print(F("Press return to continue..."));
       flushInput();
       while(!Serial.available());
@@ -694,6 +782,7 @@ void loop() {
     }
     if(command.equals("8") and testMenu == false){
       clearScreen();
+      setLEDColor(0, 0, 1);
       confirm();
       uint16_t highestBlock = 0;
       if(confirmOperation == true){
@@ -808,6 +897,7 @@ void loop() {
         highestBlock = (driveSize[0]<<16) | (driveSize[1]<<8) | (driveSize[2]);
         if(highestBlock != 0x2600 and confirmOperation == true){
           confirmOperation = false;
+          setLEDColor(1, 0, 0);
           Serial.println(F("This device only currently supports low-level formatting 5MB ProFiles."));
         }
         if(confirmOperation == true){
@@ -816,15 +906,18 @@ void loop() {
           while(!Serial.available());
           flushInput();
           Serial.println(F("Low-level formatting drive..."));
+          setLEDColor(0, 0, 0);
           profileHandshake();
           sendCommandBytes(0x03, 0x00, 0x00, 0x00, defaultRetries, defaultSpareThreshold);
           //clearCMD();
           while(readBsy() != 1);
+          setLEDColor(0, 0, 1);
           Serial.print(F("Remove jumper and press return to continue..."));
           flushInput();
           while(!Serial.available());
           flushInput();
           Serial.println(F("Scanning drive for bad blocks..."));
+          setLEDColor(0, 0, 0);
           profileHandshake();
           sendCommandBytes(0x04, 0x00, 0x00, 0x00, defaultRetries, defaultSpareThreshold);
           //clearCMD();
@@ -834,6 +927,7 @@ void loop() {
           sendCommandBytes(0x05, 0x00, 0x00, 0x00, defaultRetries, defaultSpareThreshold);
           //clearCMD();
           while(readBsy() != 1);
+          setLEDColor(0, 1, 0);
           Serial.print(F("Low-level format successful! "));
         }
         Serial.print(F("Press return to continue..."));
@@ -857,6 +951,7 @@ void loop() {
     if(command.equals("1") and testMenu == true){
       clearScreen();
       getDriveType();
+      setLEDColor(0, 0, 1);
       repeatTest();
       uint16_t highestBlock = 0;
       bool firstTime = true;
@@ -873,7 +968,7 @@ void loop() {
           for(int j = 0; j < 3; j++){
             printDataNoSpace(driveSize[j]);
           }
-          Serial.print(" of ");
+          Serial.print(F(" of "));
           printDataNoSpace((highestBlock - 1) >> 16);
           printDataNoSpace((highestBlock - 1) >> 8);
           printDataNoSpace(highestBlock - 1);
@@ -881,11 +976,12 @@ void loop() {
           Serial.print(((float)i/(highestBlock - 1))*100);
           Serial.print(F("%"));
           if(repeat == true){
-            Serial.print(" - Pass ");
+            Serial.print(F(" - Pass "));
             Serial.print(passes);
           }
           Serial.write("\033[1000D");
           if((status[0] & B11111101) != 0 or (status[1] & B11011110) != 0 or (status[2] & B01000000) != 0){ //Make it so that we go back up to the progress line after printing an error
+            setLEDColor(1, 0, 0);
             Serial.println();
             Serial.println();
             Serial.print(F("Error reading block "));
@@ -912,6 +1008,7 @@ void loop() {
 
       Serial.println();
       Serial.print(F("Read test completed. Press return to continue..."));
+      setLEDColor(0, 1, 0);
       flushInput();
       while(!Serial.available());
       mainMenu();
@@ -922,6 +1019,7 @@ void loop() {
 
     if(command.equals("6") and testMenu == true){
       clearScreen();
+      setLEDColor(0, 0, 1);
       confirm();
       uint16_t highestBlock = 0;
       if(confirmOperation == true){
@@ -941,7 +1039,7 @@ void loop() {
             for(int j = 0; j < 3; j++){
               printDataNoSpace(driveSize[j]);
             }
-            Serial.print(" of ");
+            Serial.print(F(" of "));
             printDataNoSpace((highestBlock - 1) >> 16);
             printDataNoSpace((highestBlock - 1) >> 8);
             printDataNoSpace(highestBlock - 1);
@@ -949,11 +1047,12 @@ void loop() {
             Serial.print(((float)i/(highestBlock - 1))*100);
             Serial.print(F("%"));
             if(repeat == true){
-              Serial.print(" - Pass ");
+              Serial.print(F(" - Pass "));
               Serial.print(passes);
             }
             Serial.write("\033[1000D");
             if((status[0] & B11111101) != 0 or (status[1] & B11011110) != 0 or (status[2] & B01000000) != 0){ //Make it so that we go back up to the progress line after printing an error
+              setLEDColor(1, 0, 0);
               Serial.println();
               Serial.println();
               Serial.print(F("Error reading block "));
@@ -999,7 +1098,7 @@ void loop() {
             for(int j = 0; j < 3; j++){
               printDataNoSpace(driveSize[j]);
             }
-            Serial.print(" of ");
+            Serial.print(F(" of "));
             printDataNoSpace((highestBlock - 1) >> 16);
             printDataNoSpace((highestBlock - 1) >> 8);
             printDataNoSpace(highestBlock - 1);
@@ -1007,11 +1106,12 @@ void loop() {
             Serial.print(((float)i/(highestBlock - 1))*100);
             Serial.print(F("%"));
             if(repeat == true){
-              Serial.print(" - Pass ");
+              Serial.print(F(" - Pass "));
               Serial.print(passes);
             }
             Serial.write("\033[1000D");
             if((status[0] & B11111101) != 0 or (status[1] & B11011110) != 0 or (status[2] & B01000000) != 0){ //Make it so that we go back up to the progress line after printing an error
+              setLEDColor(1, 0, 0);
               Serial.println();
               Serial.println();
               Serial.print(F("Error writing block "));
@@ -1042,7 +1142,7 @@ void loop() {
             for(int j = 0; j < 3; j++){
               printDataNoSpace(driveSize[j]);
             }
-            Serial.print(" of ");
+            Serial.print(F(" of "));
             printDataNoSpace((highestBlock - 1) >> 16);
             printDataNoSpace((highestBlock - 1) >> 8);
             printDataNoSpace(highestBlock - 1);
@@ -1050,7 +1150,7 @@ void loop() {
             Serial.print(((float)i/(highestBlock - 1))*100);
             Serial.print(F("%"));
             if(repeat == true){
-              Serial.print(" - Pass ");
+              Serial.print(F(" - Pass "));
               Serial.print(passes);
             }
             Serial.write("\033[1000D");
@@ -1060,6 +1160,7 @@ void loop() {
               }
             }
             if((status[0] & B11111101) != 0 or (status[1] & B11011110) != 0 or (status[2] & B01000000) != 0 or blockError == true){ //Make it so that we go back up to the progress line after printing an error
+              setLEDColor(1, 0, 0);
               Serial.println();
               Serial.println();
               blockError = false;
@@ -1089,6 +1190,7 @@ void loop() {
 
       Serial.println();
       Serial.print(F("Read-Write-Read test completed. Press return to continue..."));
+      setLEDColor(0, 1, 0);
       flushInput();
       while(!Serial.available());
       mainMenu();
@@ -1100,6 +1202,7 @@ void loop() {
 
     if(command.equals("2") and testMenu == true){
       clearScreen();
+      setLEDColor(0, 0, 1);
       confirm();
       uint16_t highestBlock = 0;
       if(confirmOperation == true){
@@ -1122,7 +1225,7 @@ void loop() {
             for(int j = 0; j < 3; j++){
               printDataNoSpace(driveSize[j]);
             }
-            Serial.print(" of ");
+            Serial.print(F(" of "));
             printDataNoSpace((highestBlock - 1) >> 16);
             printDataNoSpace((highestBlock - 1) >> 8);
             printDataNoSpace(highestBlock - 1);
@@ -1130,11 +1233,12 @@ void loop() {
             Serial.print(((float)i/(highestBlock - 1))*100);
             Serial.print(F("%"));
             if(repeat == true){
-              Serial.print(" - Pass ");
+              Serial.print(F(" - Pass "));
               Serial.print(passes);
             }
             Serial.write("\033[1000D");
             if((status[0] & B11111101) != 0 or (status[1] & B11011110) != 0 or (status[2] & B01000000) != 0){ //Make it so that we go back up to the progress line after printing an error
+              setLEDColor(1, 0, 0);
               Serial.println();
               Serial.println();
               Serial.print(F("Error writing block with pattern 01010101"));
@@ -1158,6 +1262,7 @@ void loop() {
             }
             profileWrite(driveSize[0], driveSize[1], driveSize[2]);
             if((status[0] & B11111101) != 0 or (status[1] & B11011110) != 0 or (status[2] & B01000000) != 0){ //Make it so that we go back up to the progress line after printing an error
+              setLEDColor(1, 0, 0);
               Serial.println();
               Serial.println();
               Serial.print(F("Error writing block with pattern 10101010"));
@@ -1186,6 +1291,7 @@ void loop() {
 
       Serial.println();
       Serial.print(F("Write test completed. Press return to continue..."));
+      setLEDColor(0, 1, 0);
       flushInput();
       while(!Serial.available());
       mainMenu();
@@ -1195,6 +1301,7 @@ void loop() {
     if(command.equals("3") and testMenu == true){
       clearScreen();
       getDriveType();
+      setLEDColor(0, 0, 1);
       repeatTest();
       uint16_t highestBlock = 0;
       bool firstTime = true;
@@ -1214,7 +1321,7 @@ void loop() {
           for(int j = 0; j < 3; j++){
             printDataNoSpace(driveSize[j]);
           }
-          Serial.print(" of ");
+          Serial.print(F(" of "));
           printDataNoSpace((highestBlock - 1) >> 16);
           printDataNoSpace((highestBlock - 1) >> 8);
           printDataNoSpace(highestBlock - 1);
@@ -1222,11 +1329,12 @@ void loop() {
           Serial.print(((float)i/(highestBlock - 1))*100);
           Serial.print(F("%"));
           if(repeat == true){
-            Serial.print(" - Pass ");
+            Serial.print(F(" - Pass "));
             Serial.print(passes);
           }
           Serial.write("\033[1000D");
           if((status[0] & B11111101) != 0 or (status[1] & B11011110) != 0 or (status[2] & B01000000) != 0){ //Make it so that we go back up to the progress line after printing an error
+            setLEDColor(1, 0, 0);
             Serial.println();
             Serial.println();
             Serial.print(F("Error reading block "));
@@ -1253,6 +1361,7 @@ void loop() {
 
       Serial.println();
       Serial.print(F("Read test completed. Press return to continue..."));
+      setLEDColor(0, 1, 0);
       flushInput();
       while(!Serial.available());
       mainMenu();
@@ -1266,6 +1375,7 @@ void loop() {
 
     if(command.equals("4") and testMenu == true){
       clearScreen();
+      setLEDColor(0, 0, 1);
       confirm();
       uint16_t highestBlock = 0;
       if(confirmOperation == true){
@@ -1291,7 +1401,7 @@ void loop() {
             for(int j = 0; j < 3; j++){
               printDataNoSpace(driveSize[j]);
             }
-            Serial.print(" of ");
+            Serial.print(F(" of "));
             printDataNoSpace((highestBlock - 1) >> 16);
             printDataNoSpace((highestBlock - 1) >> 8);
             printDataNoSpace(highestBlock - 1);
@@ -1299,11 +1409,12 @@ void loop() {
             Serial.print(((float)i/(highestBlock - 1))*100);
             Serial.print(F("%"));
             if(repeat == true){
-              Serial.print(" - Pass ");
+              Serial.print(F(" - Pass "));
               Serial.print(passes);
             }
             Serial.write("\033[1000D");
             if((status[0] & B11111101) != 0 or (status[1] & B11011110) != 0 or (status[2] & B01000000) != 0){ //Make it so that we go back up to the progress line after printing an error
+              setLEDColor(1, 0, 0);
               Serial.println();
               Serial.println();
               Serial.print(F("Error writing block "));
@@ -1328,6 +1439,7 @@ void loop() {
             }
             profileWrite(driveSize[0], driveSize[1], driveSize[2]);
             if((status[0] & B11111101) != 0 or (status[1] & B11011110) != 0 or (status[2] & B01000000) != 0){ //Make it so that we go back up to the progress line after printing an error
+              setLEDColor(1, 0, 0);
               Serial.println();
               Serial.println();
               Serial.print(F("Error writing block "));
@@ -1357,6 +1469,7 @@ void loop() {
 
       Serial.println();
       Serial.print(F("Write test completed. Press return to continue..."));
+      setLEDColor(0, 1, 0);
       flushInput();
       while(!Serial.available());
       mainMenu();
@@ -1367,6 +1480,7 @@ void loop() {
     if(command.equals("5") and testMenu == true){
       clearScreen();
       getDriveType();
+      setLEDColor(0, 0, 1);
       repeatTest();
       uint16_t highestBlock = 0;
       bool firstTime = true;
@@ -1390,7 +1504,7 @@ void loop() {
           for(int j = 0; j < 3; j++){
             printDataNoSpace(driveSize[j]);
           }
-          Serial.print(" of ");
+          Serial.print(F(" of "));
           printDataNoSpace((highestBlock - 1) >> 16);
           printDataNoSpace((highestBlock - 1) >> 8);
           printDataNoSpace(highestBlock - 1);
@@ -1398,11 +1512,12 @@ void loop() {
           Serial.print(((float)i/(highestBlock - 1))*100);
           Serial.print(F("%"));
           if(repeat == true){
-            Serial.print(" - Pass ");
+            Serial.print(F(" - Pass "));
             Serial.print(passes);
           }
           Serial.write("\033[1000D");
           if((status[0] & B11111101) != 0 or (status[1] & B11011110) != 0 or (status[2] & B01000000) != 0){ //Make it so that we go back up to the progress line after printing an error
+            setLEDColor(1, 0, 0);
             Serial.println();
             Serial.println();
             Serial.print(F("Error reading block "));
@@ -1429,6 +1544,7 @@ void loop() {
 
       Serial.println();
       Serial.print(F("Butterfly read test completed. Press return to continue..."));
+      setLEDColor(0, 1, 0);
       flushInput();
       while(!Serial.available());
       mainMenu();
@@ -1560,9 +1676,11 @@ void receivePacket(){
 }
 
 void getDriveType(){
+  setLEDColor(0, 0, 1);
   Serial.println(F("Reading spare table to determine drive size..."));
   Serial.println(F("Command: 00 FF FF FF 64 14"));
   profileRead(0xFF, 0xFF, 0xFF);
+  setLEDColor(0, 0, 1);
   if(data[13] == 0x00 and data[14] == 0x00 and data[15] == 0x00){
     Serial.print(F("Drive is a 5MB ProFile with "));
   }
@@ -1652,6 +1770,8 @@ void repeatTest(){
 }
 
 void writeTwoBlocks(byte address0, byte address1, byte address2){
+  int startBackupErrors = backupErrors;
+  setLEDColor(0, 0, 0);
   bool handshakeSuccessful = profileHandshake();
   byte commandResponse = sendCommandBytes(write, address0, address1, address2, defaultRetries, defaultSpareThreshold);
   if((status[0] & B11111101) != 0 or (status[1] & B11011110) != 0 or (status[2] & B01000000) != 0 or handshakeSuccessful == 0 or commandResponse != 0x03){
@@ -1717,6 +1837,12 @@ void writeTwoBlocks(byte address0, byte address1, byte address2){
     if(millis() - startTime >= 10000){
       break;
     }
+    if(startBackupErrors != backupErrors){
+      setLEDColor(1, 0, 0);
+    }
+    else{
+      setLEDColor(1, 1, 0);
+    }
   }
   //delay(1);
   for(int i = 532; i < 1064; i++){
@@ -1752,6 +1878,8 @@ void writeTwoBlocks(byte address0, byte address1, byte address2){
 }
 
 void readTwoBlocks(byte address0, byte address1, byte address2){
+  int startBackupErrors = backupErrors;
+  setLEDColor(0, 0, 0);
   bool handshakeSuccessful = profileHandshake();
   byte commandResponse = sendCommandBytes(read, address0, address1, address2, defaultRetries, defaultSpareThreshold);
   readStatusBytes();
@@ -1788,6 +1916,12 @@ void readTwoBlocks(byte address0, byte address1, byte address2){
   }
   clearCMD();
   delayMicroseconds(readDelay);
+  if(startBackupErrors != backupErrors){
+    setLEDColor(1, 0, 0);
+  }
+  else{
+    setLEDColor(1, 1, 0);
+  }
 }
 
 
@@ -1975,7 +2109,7 @@ void printRawData(){
       Serial.print(F(": "));
     }
   }
-  Serial.print("                                              ");
+  Serial.print(F("                                              "));
   for(int i = 528; i < 532; i++){
     if(data[i] <= 0x1F){
       Serial.print(F("."));
@@ -2357,6 +2491,12 @@ void writeData(){
   sendData(0x55);
   //delay(1);
   clearCMD();
+}
+
+void setLEDColor(bool r, bool g, bool b){
+  digitalWrite(red, r);
+  digitalWrite(green, g);
+  digitalWrite(blue, b);
 }
 
 /*ProFile PD0-PD7 are Arduino pins D2-D9
