@@ -1,7 +1,8 @@
 # ArduinoFile
 An Arduino-based device for testing and emulating ProFile hard drives.<br>
 <br>
-![IMG_3571](https://user-images.githubusercontent.com/16897189/133942992-7602075a-a124-4176-a397-23a169452b84.jpeg)
+![IMG_3865](https://user-images.githubusercontent.com/16897189/146275356-bb4e56cd-9843-4474-87db-e54e72f25cec.jpeg)
+
 
 ## Warning
 The ArduinoFile is a prototype and there are almost certainly bugs in the software, so don't use it in situations where data loss would be bad.<br>
@@ -16,12 +17,29 @@ The result was the ArduinoFile, which uses an Arduino Mega and a simple PCB to i
 The device is also capable of emulating a ProFile hard drive, using an SD card to store disk images, and has near-complete compatibility with Tom Stepleton's awesome [Cameo/Aphid Selector](https://github.com/stepleton/cameo/tree/master/aphid/selector) program. It's pretty fast too; it takes around 40 seconds to boot into LOS 3.0, which is a full 20 seconds faster than my actual ProFiles, and the emulator only needs two seconds or so to initialize itself after you power it up!
 
 ## Hardware
-NOTE: The PCB shown in the picture above is a prototype and the final design that I'm working on now will be a lot simpler and more compact, so I've provided the Gerber files and EasyEDA schematic and PCB files for this current design but I'm not going to go into any detail about it.<br>
+You can find EasyEDA project files for the ArduinoFile schematic and PCB in the the PCB folder as well as a PDF version of the schematic and Gerber files for fabricating your own boards. I use [JLCPCB](https://jlcpcb.com/) for all of my boards because of the low cost, but of course you can use any PCB fabrication service that you want.<br>
 <br>
-The final ArduinoFile PCB will be a shield with a 26-pin IDC connector for connecting to the drive and a male header that you can easily hook your logic analyzer to if you end up writing/troubleshooting your own code for the device. The shield will stack right on top of the Arduino, making things a lot more compact.<br>
+The ArduinoFile PCB is an Arduino Mega shield with a 26-pin IDC connector for connecting to the drive and a male header that you can easily connect to your logic analyzer if you end up writing/troubleshooting your own code for the device. The shield stacks right on top of the Arduino, making things nice and compact. It also contains a reset button for quickly aborting an operation and returning to the main menu when in tester mode and for quickly returning to the Selector disk image when in emulator mode. The board also has an RGB status LED that is described in the emulator mode and diagnostic mode sections later in this document.<br>
 <br>
-The cable for interfacing with the Widget is just a ribbon cable with a 26-pin female IDC connector on each end. The ProFile interface cable has a 26-pin female IDC on one end and a male DB25 connector on the other.
+The links in the list below will take you to Mouser product pages for each of the parts needed in this project.
+<br>
+- 1x: [Arduino Mega microcontroller](https://www.ebay.com/itm/203648886575?_trkparms=ispr%3D1&hash=item2f6a6b672f:g:q9sAAOSwQYJhZh6q&amdata=enc%3AAQAGAAAA4LIn7qRqelfTlmbmnI9oOvzMVWy8U%2FMiHdn9%2BWBISCraykUuABsB7Slvn0zLzFILrQWIzl0WpW1cx0X3taaQwuUjAKJi5oYGOefIkmSc4FPSLr8kPkBOvSk6AhKYlIC4Vd459cDaCMeYuG%2FGeXBrDFQDDg6dKQmXUd7QEUIW%2BvimVexYcYxdNO2yoOZNpuapadbgRgsb8txWJg2rJyfjQ7me8p1jLMFmeKdbdARdez96YPw2wp9O17UvtAjyCr%2BgxSIrRotJVbrT4EknhFMbNMvyg1QmhjJn%2BWPU4EnjidvO%7Ctkp%3ABFBM1uTDh7hf).
+- 1x: [100 Ohm resistor](https://www.mouser.com/ProductDetail/603-CFR-12JT-52-100R) for R1.
+- 2x: [180 Ohm resistor](https://www.mouser.com/ProductDetail/603-CFR-25JR-52-180R) for R2 and R3.
+- 1x: [Common cathode RGB LED](https://www.mouser.com/ProductDetail/604-WP154A4SUREQBFZW) for LED1.
+- 1x: [6mm x 5mm tactile switch](https://www.mouser.com/ProductDetail/612-TL1105A) for S1.
+- 1x: [10K 10-pin bussed resistor network](https://www.mouser.com/ProductDetail/652-4610X-101-103FLF) for RP1.
+- 1x: [47K 10-pin bussed resistor network](https://www.mouser.com/ProductDetail/652-4610X-1LF-47K) for RP2.
+- 1x: [74LS280 Parity generator](https://www.mouser.com/ProductDetail/595-SN74LS280N) for U2 and an optional (but recommended) [14-pin socket](https://www.mouser.com/ProductDetail/575-1104731441001000) for it.
+- 7x: [20-pin breakaway male headers](https://www.mouser.com/ProductDetail/538-22-28-4200) for J2, J3, and all of the Arduino pins around the edge of the shield.
+- 1x: [Right angle 26-pin (2 x 13) connector](https://www.mouser.com/ProductDetail/798-HIF3FC26PA254DS1) for J1.
+- 1x: [SD card breakout board from eBay.](https://www.ebay.com/itm/234062594843?_trkparms=ispr%3D1&hash=item367f37c31b:g:mK8AAOSwH8VgNZVx&amdata=enc%3AAQAGAAAA4ORZR7Yd4l6ArFQiZiIk3%2FyGJhLpKxK3SLa0%2Fi1LBqRWuCFXp7hqVWOXCno8xNnjBRqfldA2iaf6Q32doBTPlb1WHn9Gp6ftLFAb%2FXrCKf9krHnGv6JRjlLqRwzdWU6p2XKnCuU78pGbvgVRCmOd4XR9H6KsFnP%2BUDONNDjTlKlKlIiRLIhjIjyq4RL1gXs5%2Bj12YX3dFb6dngFGK1j%2B8DI2GJIw3wXgKQDcjbOS4bz1YG4LNAxjK%2BO%2FrmlrCGgxo1UM1wpks%2BMggcK%2FKZHXeihhzHH47%2FKW%2B3eTTSNQ27uH%7Ctkp%3ABFBMzP2jhrhf)
 
+The cable for interfacing with a Widget is just a 26-pin [ribbon cable](https://www.mouser.com/ProductDetail/517-3365-26FT) with two [26-pin female IDC connectors](https://www.mouser.com/ProductDetail/710-61202623021), one on each end. The ProFile interface cable has a [26-pin female IDC](https://www.mouser.com/ProductDetail/710-61202623021) on one end of the [ribbon cable](https://www.mouser.com/ProductDetail/517-3365-26FT) and a [male DB25 connector](https://www.mouser.com/ProductDetail/523-L117DBFRA25P) on the other. These are the same cables that are used with the Cameo/Aphid, so you can reuse your existing cables if you already have one of those.
+
+Assembly is pretty straightforward: just put each part in the location indicated above and solder it in. See the picture at the start of this document if you're unsure about anything. Make sure to get the polarity of the LED right based on the markings on the silkscreen and ensure that the dot on one end of each resistor pack aligns with the square pad on the board. Also, make sure that you solder in the headers that allow the shield to stack on top of the Arduino before you install the right angle connector since the connector will cover up some of the holes for the Arduino-stacking pins.
+
+Now that your ArduinoFile is all put together, we can talk about how to use it!
 ## ProFile Emulator Mode
 
 ### Software
@@ -35,6 +53,9 @@ The ArduinoFile emulator software requires the SDFat library for SD card accesse
 If you plan on using the ArduinoFile without the Cameo/Aphid Selector, just format your microSD card as FAT32 and copy your desired raw disk image (images from the Cameo/Aphid work fine) over to the root directory of the card. Change the file's name to "profile.image", plug the SD card into the Arduino, press the reset button, and you should be up and running!
 <br><br>
 If you want to use the Selector (HIGHLY recommended), format the card as FAT32 and copy the contents of the SDTemplate folder into the root of the SD card. This will set up the rescue folder with backups of the Selector in ProFile, 3.5", and Twiggy formats and will place an image of the selector called "profile.image" in the root of the card. You can now plug the SD card into the ArduinoFile and press the reset button to initialize the device.
+
+### Status LED
+When the ArduinoFile is first initializing the SD card and switching to the default drive image, the status LED will illuminate red. The LED will turn green after these operations have completed (usually around two or three seconds), indicating that the emulator is ready for use. The LED will go dark during a read or write operation and will remain green whenever the ArduinoFile is not communicating with the host.
 
 ### How to Use It
 
@@ -69,7 +90,9 @@ unless otherwise specified.<br>
 NOTE 2: Whenever you enter a block number, you must add leading zeros to make the
 entry three bytes long. For instance, you would enter block 1FFF as 001FFF.
 <br>
-<br>
+#### Status LED
+In diagnostic mode, the status LED will be green whenever the ArduinoFile is ready to accept a command from the user or whenever an operation completes successfully. The LED will illuminate blue whenever user input is expected (such as confirming the drive type or entering a block number) and will be red whenever an error occurs. The LED will go dark during an actual read or write operation and will be yellow in between reads and writes.
+#### Main Menu
 Upon connecting to the ArduinoFile, you should see a screen that looks like this:<br>
 <br>
 <img width="409" alt="Screen Shot 2021-09-19 at 7 54 53 PM" src="https://user-images.githubusercontent.com/16897189/133947059-ad9e4e78-1bed-431b-8c66-626a50a0f993.png">
@@ -195,8 +218,6 @@ The items on the wishlist are listed in order of priority. The ones that I deem 
 - Make the Selector uptime counter do something more interesting since it can't be used for keeping time in this situation.
 
 ### Both
-- Add details, schematics, and links to the hardware needed for this project once the final design is ready!
-- Add a status LED and reset button!
 - Maybe add a switch that the user can toggle to switch between emulator and tester modes on the fly without having to upload new code?
 - Add comments to the code.
 - Add support for BLU images and images with 5:1 interleave.
