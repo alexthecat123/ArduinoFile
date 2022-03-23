@@ -63,13 +63,13 @@ To be honest, there's really not a lot to say here. Once you follow the software
 
 IMPORTANT NOTE: There are two main parts of the Selector protocol that aren't fully functional on the ArduinoFile at the moment. First, I haven't implemented the key-value store yet, so that's completely missing. This will keep you from setting a moniker for your ArduinoFile or enabling autoboot in the Selector. Other than that, it doesn't really affect the user experience. Second, I can't get the SDFat library to retrieve the modification date and time for the files on the SD card for some reason, so the ArduinoFile isn't able to send modification dates when the Selector requests information about a file. Fortunately, the Selector doesn't seem to use this information for anything, so it's not a big deal.
 
-Due to the limitations of the Arduino, duplicating a file on the SD card (the "C" command in the Selector) takes around 18 seconds for a 5MB disk image and longer for larger images. This is so long that the Selector will time out while waiting for the ArduinoFile to duplicate a disk image and will say that the operation might have failed. Don't worry, it probably didn't! Just give it some time to finish up (you can see when it's done if you're connected to the ArduinoFile over serial) and you should be good to go! I'll be adding a status LED to the board soon that will be able to provide this information without connecting over serial.
+Due to the limitations of the Arduino, duplicating a file on the SD card (the "C" command in the Selector) takes around 18 seconds for a 5MB disk image and longer for larger images. This is so long that the Selector will time out while waiting for the ArduinoFile to duplicate a disk image and will say that the operation might have failed. Don't worry, it probably didn't! Just give it some time to finish up (you can see when it's done if you're connected to the ArduinoFile over serial or by waiting for the status LED to illuminate at the end of the operation) and you should be good to go!
 
 Once you're done with a particular disk image and want to get back to the Selector, you can do this either by unplugging the ArduinoFile and then plugging it back in or by pressing the reset button on the ArduinoFile shield. There isn't an OS or anything running on the Arduino, so the emulator is ready to go within two or three seconds of rebooting it!
 
 The ArduinoFile supports disk images of pretty much any size you want and will automatically adjust the spare table accordingly, so feel free to use 5MB, 10MB, or even larger images (for use with MacWorks only!) and they should all work just fine!
 
-If you connect to the ArduinoFile over serial with a baud rate of 115200, you can see a lot of really interesting information about what it's doing. There are status messages for the [Selector magic block commands](https://github.com/stepleton/cameo/blob/master/aphid/selector/PROTOCOL.md) (the status for duplicating a file is especially useful, as discussed above), for when the drive was reset, and for any errors during communication between the Lisa and the ArduinoFile. Perhaps most intersting of all, the ArduinoFile will print out the command bytes for each command it receives and it's oddly mesmerizing to see them scroll by when you boot an operating system! For the sake of making the emulator faster, I was going to remove these status/debugging messages after I worked out all the bugs, but removing them didn't improve performance by any noticable amount, so I decided to leave them in since they look so cool!
+If you connect to the ArduinoFile over serial with a baud rate of 115200, you can see a lot of really interesting information about what it's doing. There are status messages for the [Selector magic block commands](https://github.com/stepleton/cameo/blob/master/aphid/selector/PROTOCOL.md) (the status for duplicating a file is especially useful, as discussed above), for when the drive was reset, and for any errors during communication between the Lisa and the ArduinoFile. Perhaps most interesting of all, the ArduinoFile will print out the command bytes for each command it receives and it's oddly mesmerizing to see them scroll by when you boot an operating system! For the sake of making the emulator faster, I was going to remove these status/debugging messages after I worked out all the bugs, but removing them didn't improve performance by any noticable amount, so I decided to leave them in since they look so cool!
 <br><br>
 <img width="968" alt="Screen Shot 2021-10-17 at 3 56 57 PM" src="https://user-images.githubusercontent.com/16897189/137642944-60545be0-9b87-497d-a2fc-8992d2ff6bca.png">
 
@@ -136,7 +136,7 @@ that's not just the raw data from the disk. Since this operation will destroy
 all information currently on your disk, the ArduinoFile gives a warning about this
 before beginning the restore operation. It then uses the spare table to determine
 the drive's size, which you can change by pressing "n" and entering a custom size
-in blocks. After confirming your drive size, start your XMODEM receiver with a
+in blocks. After confirming your drive size, start your XMODEM sender with a
 1K block size and wait for the transfer to complete. Just like the backup operation,
 this usually takes around 15 minutes for a 5MB ProFile or 30 minutes for a 10MB ProFile or Widget.<br>
 <br>
@@ -212,7 +212,6 @@ The items on the wishlist are listed in order of priority. The ones that I deem 
 - Allow the user to disable the stepper in a ProFile (requires diagnostic Z8).
 
 ### Emulator Mode
-- Get the key-value store working!
 - Utilize the status bytes if an SD card read/write error occurs (currently, the status bytes are just always zero).
 - Get the ArduinoFile to send modification dates and times to the Selector upon request.
 - Make the Selector uptime counter do something more interesting since it can't be used for keeping time in this situation.
@@ -233,4 +232,5 @@ The items on the wishlist are listed in order of priority. The ones that I deem 
 
 ## Acknowledgements
 - This project would not have been possible without the help of the LisaList community, especially Tom Stepleton and his awesome [Cameo/Aphid project](https://github.com/stepleton/cameo/tree/master/aphid).
+- I would also like to thank James Denton from [ArcaneByte](http://www.arcanebyte.com/) for helping me find and fix bugs in the ProFile emulator software.
 - Dr. Patrick Schäfer's [reverse-engineering of the ProFile communications protocol](http://john.ccac.rwth-aachen.de:8000/patrick/idefile.htm) for his IDEFile project was really invaluable too!
