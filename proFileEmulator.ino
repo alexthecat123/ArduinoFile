@@ -1,10 +1,9 @@
 //***********************************************************************************
-//* ArduinoFile ProFile Emulator Software                                           *
+//* ArduinoFile ProFile Emulator Software v1.2                                      *
 //* By: Alex Anderson-McLeod                                                        *
 //* Email address: alexelectronicsguy@gmail.com                                     *
 //***********************************************************************************
 
-//Fix the LED problem
 //Try to get the creatiom/mod dates to do something
 //Add while loops and make sure that there aren't any places where I assume the Lisa will be ready when I am.
 //Maybe switch everything over to a 5V Teensy MCU?
@@ -43,6 +42,8 @@ uint16_t nonce;
 uint16_t oldNonce;
 unsigned long freeSpace;
 uint8_t buf[4096];
+uint16_t KVMoniker = 1024;
+uint16_t KVAutoboot = 1557;
 char extension[255] = ".image";
 uint32_t uptime = 0; //if this isn't originally zero, then it resets each time we do the stuff mentioned on the next line down.
 //uint32_t pointerTest = &uptime; //why is this needed to keep uptime from resetting each time we use the four bytes before data[] to store status?
@@ -89,6 +90,7 @@ void setup(){
     Serial.println(F("Default drive file profile.image not found! Halting..."));
     while(1);
   }
+
   /*KVCache.seekSet(532*65530);
   KVCache.read(KVKey, 20);
   for(int i = 0; i < 20; i++){
@@ -127,7 +129,6 @@ void setup(){
 }
 
 void loop() {
-  setLEDColor(0, 1, 0);
   initPins(); //set all pins to their idle states
   cli(); //disable interrupts to keep them from slowing things down
   while(readCMD() == 1); //wait for CMD to go low
@@ -140,7 +141,6 @@ void loop() {
     return;
   }
   cli();
-  setLEDColor(0, 0, 0);
   sendData(0x01); //send an 0x01 to the host
   //PORTC = PORTC & B11011111;
   setBSY(); //and lower BSY to acknowledge our presence
@@ -178,6 +178,7 @@ void loop() {
   unsigned int value;
   ogPointer = pointer;
   PORTC = PORTC | B00000010; //if everything checks out, raise BSY
+  setLEDColor(0, 1, 0);
   currentTime = 0;
   byte oldPIN = 0;
   while((PINC & B00000001) == B00000001){ //do this for each of the remaining data bytes and ((PINC | B11111011)) == B11111011
@@ -269,6 +270,7 @@ void readDrive(){
     }
   }
   else if(commandBuffer[1] == 0xFF and commandBuffer[2] == 0xFE and commandBuffer[3] == 0xFD){ //emulator status
+    setLEDColor(0, 0, 1); //fix LED issue
     sei();
     char days[5];
     char hours[3];
@@ -290,10 +292,12 @@ void readDrive(){
     for(int i = 8; i < 10; i++){ //uptime
       data[i] = seconds[i % 2];
     }
-    uptime += 2;
     if(nonce != oldNonce){
       freeSpace = SD.vol()->freeClusterCount() * SD.vol()->sectorsPerCluster() * 512;
     }
+
+    uptime += 2;
+
     oldNonce = nonce;
     char bytesFree[16];
     ultoa(freeSpace, bytesFree, 10);
@@ -329,6 +333,7 @@ void readDrive(){
     cli();
   }
   else if(commandBuffer[1] == 0xFF and commandBuffer[2] == 0xFE and commandBuffer[3] == 0xFE){ //get file info
+    setLEDColor(0, 0, 1); //fix LED issue
     sei();
     fileCount = 0;
     rootDir.rewind();
@@ -451,9 +456,28 @@ void readDrive(){
     cli();
   }
 
-  /*else if(commandBuffer[1] == 0xFF and commandBuffer[2] == 0xFE and commandBuffer[3] == 0xFF){ //retrieve key-value entry from the cache
+  else if(commandBuffer[1] == 0xFF and commandBuffer[2] == 0xFE and commandBuffer[3] == 0xFF){ //retrieve key-value entry from the cache
+    setLEDColor(0, 0, 1); //fix LED issue
     sei();
-    KVCache.seekSet((commandBuffer[4] << 8) | (commandBuffer[5]));
+    if(commandBuffer[4] == 0x53 and commandBuffer[5] == 0x43){
+      Serial.println(F("Loaded moniker/autoboot key-value pair!"));
+      for(int i = 0; i < 532; i++){
+        data[i] = EEPROM.read(KVMoniker + i);
+      }
+    }
+    else if(commandBuffer[4] == 0x53 and commandBuffer[5] == 0x61){
+      Serial.println(F("Loaded autoboot password key-value pair!"));
+      for(int i = 0; i < 532; i++){
+        data[i] = EEPROM.read(KVAutoboot + i);
+      }
+    }
+    else{
+      Serial.println(F("Error: Unsupported key-value load operation!"));
+    }
+    //Moniker address is 5343 in the cache and 53656C6563746F723A20636F6E666967202020D7 in the store
+
+    //Serial.println(F("Warning: The attempted key-value cache read failed because key-value operations are not currently supported!"));
+    /*KVCache.seekSet((commandBuffer[4] << 8) | (commandBuffer[5]));
     Serial.print(F("Reading entry "));
     printDataNoSpace(commandBuffer[4]);
     printDataNoSpace(commandBuffer[5]);
@@ -468,12 +492,13 @@ void readDrive(){
     for(int i = 20; i < 532; i++){
       printDataNoSpace(data[i]);
     }
-    Serial.println();
+    Serial.println();*/
     delay(1);
     cli();
-  }*/
+  }
 
   else if(commandBuffer[1] == 0xFF and commandBuffer[2] == 0xFE and commandBuffer[3] == 0xFC){ //selector rescue
+    setLEDColor(0, 0, 1); //fix LED issue
     sei();
     if(commandBuffer[4] == 0xFF and commandBuffer[5] == 0xFF){ //replace selector with a spare from the rescue folder
       int replacementIndex = 0;
@@ -611,7 +636,6 @@ void readDrive(){
     *i = 0x00;
   }
   clearBSY(); //and raise BSY
-
   //startTime = millis();
   currentTime = 0;
   byte *pointer = data - 4; //make the pointer point to the data array
@@ -718,8 +742,10 @@ void writeDrive(byte response){
     if(data[0] == 0x48 and data[1] == 0x41 and data[2] == 0x4C and data[3] == 0x54){ //halt
       halt = true;
       Serial.println(F("Halting emulator..."));
+      setLEDColor(1, 1, 1);
     }
     if(data[0] == 0x49 and data[1] == 0x4D and data[2] == 0x41 and data[3] == 0x47 and data[4] == 0x45 and data[5] == 0x3A){ //switch image files
+      setLEDColor(0, 0, 1); //fix LED issue
       Serial.print(F("Switching to image file "));
       int i = 6;
       while(1){
@@ -749,7 +775,30 @@ void writeDrive(byte response){
     delay(10);
     cli();
   }
+  else if(commandBuffer[1] == 0xFF and commandBuffer[2] == 0xFE and commandBuffer[3] == 0xFF){
+    setLEDColor(0, 0, 1); //fix LED issue
+    sei();
+    if(commandBuffer[4] == 0xFF and commandBuffer[5] == 0xFF);
+    else if(commandBuffer[4] == 0x53 and commandBuffer[5] == 0x43){
+      Serial.println(F("Wrote to moniker/autoboot key-value pair!"));
+      for(int i = 0; i < 532; i++){
+        EEPROM.write(KVMoniker + i, data[i]);
+      }
+    }
+    else if(commandBuffer[4] == 0x53 and commandBuffer[5] == 0x61){
+      Serial.println(F("Wrote to autoboot password key-value pair!"));
+      for(int i = 0; i < 532; i++){
+        EEPROM.write(KVAutoboot + i, data[i]);
+      }
+    }
+    else{
+      Serial.println(F("Error: Unsupported key-value write operation!"));
+    }
+    delay(1);
+    cli();
+  }
   else if(commandBuffer[1] == 0xFF and commandBuffer[2] == 0xFE and commandBuffer[3] == 0xFE){ //FS commands
+    setLEDColor(0, 0, 1); //fix LED issue
     sei();
     if(commandBuffer[4] == 0x63 and commandBuffer[5] == 0x70){ //copy
       Serial.print(F("Copying "));
@@ -799,6 +848,7 @@ void writeDrive(byte response){
       destFile.close();
     }
     else if(commandBuffer[4] == 0x6D and commandBuffer[5] == 0x6B){ //create new image, normal
+      setLEDColor(0, 0, 1); //fix LED issue
       Serial.print(F("Making new 5MB image called "));
       int i = 0;
       while(1){
@@ -821,6 +871,7 @@ void writeDrive(byte response){
       destFile.close();
     }
     else if(commandBuffer[4] == 0x6D and commandBuffer[5] == 0x78){ //create new image, extended
+      setLEDColor(0, 0, 1); //fix LED issue
       Serial.print(F("Making new image of size "));
       int i = 0;
       while(1){
@@ -857,6 +908,7 @@ void writeDrive(byte response){
       destFile.close();
     }
     else if(commandBuffer[4] == 0x72 and commandBuffer[5] == 0x6D){ //delete
+      setLEDColor(0, 0, 1); //fix LED issue
       int i = 0;
       Serial.print(F("Deleting file "));
       while(1){
@@ -876,6 +928,7 @@ void writeDrive(byte response){
       EEPROM.write(5, nonce + 1);
     }
     else if(commandBuffer[4] == 0x6D and commandBuffer[5] == 0x76){ //move aka rename
+      setLEDColor(0, 0, 1); //fix LED issue
       Serial.print(F("Renaming "));
       int i = 0;
       while(1){
@@ -914,6 +967,7 @@ void writeDrive(byte response){
       EEPROM.write(5, nonce + 1);
     }
     else if(commandBuffer[4] == 0x73 and commandBuffer[5] == 0x78){ //sx (set extension)
+      setLEDColor(0, 0, 1); //fix LED issue
       int i = 0;
       while(1){
         if(data[i] == 0x00){
@@ -1034,10 +1088,12 @@ void updateSpareTable(){
 //all of these functions just make it easier to set, clear, and read the control signals for the drive
 
 void setBSY(){
+  setLEDColor(0, 0, 0);
   PORTC = PORTC & B11111101;
 }
 
 void clearBSY(){
+  setLEDColor(0, 1, 0);
   PORTC = PORTC | B00000010;
 }
 
