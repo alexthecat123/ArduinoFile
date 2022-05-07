@@ -3,12 +3,6 @@ An Arduino-based device for testing and emulating ProFile hard drives.<br>
 <br>
 ![IMG_3865](https://user-images.githubusercontent.com/16897189/146275356-bb4e56cd-9843-4474-87db-e54e72f25cec.jpeg)
 
-
-## Warning
-The ArduinoFile is a prototype and there are almost certainly bugs in the software, so don't use it in situations where data loss would be bad.<br>
-<br>
-If you find any bugs, please email me at alexelectronicsguy@gmail.com so that I can work on getting them fixed!
-
 ## Introduction
 I recently built myself a USBWidEx to troubleshoot one of my ProFile hard drives and I'm really happy with it, but I found the surface-mount soldering to be really difficult (I fried three chips in the process) and the Renesas processors used in the device aren't made anymore, so I wanted a cheaper and more simplistic solution.
 
@@ -43,7 +37,7 @@ Now that your ArduinoFile is all put together, we can talk about how to use it!
 ## ProFile Emulator Mode
 
 ### Software
-The code is probably really sloppy since I wrote it all in a hurry in between my college classes, but it certainly gets the job done.<br>
+The code is probably really sloppy since I wrote it all in a hurry in between my classes, but it certainly gets the job done.<br>
 <br>
 The ArduinoFile emulator software requires the SDFat library for SD card accesses, which can be installed by selecting the Library Manager from the Arduino IDE's tools menu and searching for "SDFat".
 
@@ -55,15 +49,15 @@ If you plan on using the ArduinoFile without the Cameo/Aphid Selector, just form
 If you want to use the Selector (HIGHLY recommended), format the card as FAT32 and copy the contents of the SDTemplate folder into the root of the SD card. This will set up the rescue folder with backups of the Selector in ProFile, 3.5", and Twiggy formats and will place an image of the selector called "profile.image" in the root of the card. You can now plug the SD card into the ArduinoFile and press the reset button to initialize the device.
 
 ### Status LED
-When the ArduinoFile is first initializing the SD card and switching to the default drive image, the status LED will illuminate red. The LED will turn green after these operations have completed (usually around two or three seconds), indicating that the emulator is ready for use. The LED will go dark during a read or write operation and will remain green whenever the ArduinoFile is not communicating with the host.
+When the ArduinoFile is first initializing the SD card and switching to the default drive image, the status LED will illuminate red. The LED will turn green after these operations have completed (usually around two or three seconds), indicating that the emulator is ready for use. The LED will go dark during a standard read or write operation and will remain green whenever the ArduinoFile is not communicating with the host, just like the "Ready" LED on an actual ProFile. During a Selector "magic block" read or write operation (take a look at the Selector manual for more info about these special commands), the LED will turn blue while the operation occurs instead of just going dark. There isn't really a good reason for this other than that it's cool to be able to see when the ArduinoFile is executing a Selector command instead of a regular read or write! Finally, the LED will turn white if the ArduinoFile receives a "halt emulator" command from the Selector and the reset button will need to be pressed to get the emulator running again.
 
 ### How to Use It
 
 To be honest, there's really not a lot to say here. Once you follow the software steps mentioned above, just plug the ArduinoFile into your Lisa and it should work just like a normal ProFile! Note that the ArduinoFile needs to be connected to power (the Lisa doesn't supply power over the parallel port), so keep the USB cable connected while in use. If you don't know how to use the Selector yet, read [this incredibly detailed manual](https://github.com/stepleton/cameo/blob/master/aphid/selector/MANUAL.md) to figure things out. The ArduinoFile is pretty much completely compatible with the Selector, with the exception of a few features that aren't implemented yet (read the note below).
 
-IMPORTANT NOTE: There are two main parts of the Selector protocol that aren't fully functional on the ArduinoFile at the moment. First, I haven't implemented the key-value store yet, so that's completely missing. This will keep you from setting a moniker for your ArduinoFile or enabling autoboot in the Selector. Other than that, it doesn't really affect the user experience. Second, I can't get the SDFat library to retrieve the modification date and time for the files on the SD card for some reason, so the ArduinoFile isn't able to send modification dates when the Selector requests information about a file. Fortunately, the Selector doesn't seem to use this information for anything, so it's not a big deal.
+IMPORTANT NOTE: There are two main parts of the Selector protocol that aren't fully functional on the ArduinoFile at the moment. First, I haven't fully implemented the key-value store because it takes the Arduino way too long to look through a database file for the appropriate key-value pair. However, I have made special provisions for the Autoboot and Moniker functions in the Selector, so these work great even though the entire key-value store doesn't. Since the Selector doesn't seem to use the key-value store for anything else, it's unlikely that I'll ever fully implement it unless someone writes a program that needs it. Second, I can't get the SDFat library to retrieve the modification date and time for the files on the SD card for some reason, so the ArduinoFile isn't able to send modification dates when the Selector requests information about a file. Fortunately, the Selector doesn't seem to use this information for anything, so it's not a big deal.
 
-Due to the limitations of the Arduino, duplicating a file on the SD card (the "C" command in the Selector) takes around 18 seconds for a 5MB disk image and longer for larger images. This is so long that the Selector will time out while waiting for the ArduinoFile to duplicate a disk image and will say that the operation might have failed. Don't worry, it probably didn't! Just give it some time to finish up (you can see when it's done if you're connected to the ArduinoFile over serial or by waiting for the status LED to illuminate at the end of the operation) and you should be good to go!
+Due to the limitations of the Arduino, duplicating a file on the SD card (the "C" command in the Selector) takes around 18 seconds for a 5MB disk image and longer for larger images. This is so long that the Selector will time out while waiting for the ArduinoFile to duplicate a disk image and will say that the operation might have failed. Don't worry, it probably didn't! Just give it some time to finish up (you can see when it's done if you're connected to the ArduinoFile over serial or by waiting for the status LED to turn from blue to green at the end of the operation) and you should be good to go!
 
 Once you're done with a particular disk image and want to get back to the Selector, you can do this either by unplugging the ArduinoFile and then plugging it back in or by pressing the reset button on the ArduinoFile shield. There isn't an OS or anything running on the Arduino, so the emulator is ready to go within two or three seconds of rebooting it!
 
@@ -201,6 +195,7 @@ It would be very concerning if you couldn't figure out what this option did.
 
 ## Wishlist/Areas For Improvement
 The items on the wishlist are listed in order of priority. The ones that I deem most important are closer to the top of the lists.
+If you find any bugs, please email me at alexelectronicsguy@gmail.com so that I can work on getting them fixed!
 ### Tester Mode
 - Allow the user to manually enter custom commands.
 - Add Widget-specific commands!
@@ -229,6 +224,10 @@ The items on the wishlist are listed in order of priority. The ones that I deem 
 ### Emulator Mode
 - None!
 
+## Changelog
+- 1.0 - Initial Release
+- 1.1 - Fixed a timing issue where the ArduinoFile doesn't wait long enough for the Lisa to put an 0x55 on the bus, causing timeouts on some Lisas.
+- 1.2 - Fixed an issue where the status LED doesn't light back up after a read or write, added blue and white LED indications for magic block and halt commands, and implemented the Autoboot and Moniker portions of the key-value store.
 
 ## Acknowledgements
 - This project would not have been possible without the help of the LisaList community, especially Tom Stepleton and his awesome [Cameo/Aphid project](https://github.com/stepleton/cameo/tree/master/aphid).
