@@ -132,7 +132,7 @@ void loop() {
   initPins(); //set all pins to their idle states
   cli(); //disable interrupts to keep them from slowing things down
   while(readCMD() == 1); //wait for CMD to go low
-  if((PINL & B00010000) == B00000000){
+  if((PINF & B00010000) == B00000000){
     sei();
     delay(10);
     Serial.println(F("Resetting drive..."));
@@ -156,11 +156,11 @@ void loop() {
     }
   } //wait for the host to raise CMD
   //while(readCMD() == 0);
-  DDRL = B00000000; //set the bus into input mode so we can read from it
+  DDRF = B00000000; //set the bus into input mode so we can read from it
   //PORTC = PORTC | B00100000;
 
   currentTime = 0;
-  while(PINL != 0x55){ //wait for the host to respond with an 0x55 and timeout if it doesn't
+  while(PINF != 0x55){ //wait for the host to respond with an 0x55 and timeout if it doesn't
     currentTime++;
     if(currentTime >= timeout){
       sei();
@@ -177,23 +177,23 @@ void loop() {
   byte *pointer = commandBuffer; //make the pointer point to the data array
   unsigned int value;
   ogPointer = pointer;
-  PORTC = PORTC | B00000010; //if everything checks out, raise BSY
   setLEDColor(0, 1, 0);
+  PORTC = PORTC | B00000010; //if everything checks out, raise BSY
   currentTime = 0;
   byte oldPIN = 0;
   while((PINC & B00000001) == B00000001){ //do this for each of the remaining data bytes and ((PINC | B11111011)) == B11111011
     currentState = PINC & B00001000;
     if(currentState == B00000000 and prevState == B00001000){ //if we're on the falling edge of the strobe, put the next data byte on the bus and increment the pointer
-      *pointer++ = PINL;
+      *pointer++ = PINF;
 
     }
-    currentTime++;
+    /*currentTime++;
     if(currentTime >= timeout){
-      /*sei();
-      Serial.println("Timeout: Command Bytes");
-      cli();*/
+      sei();
+      Serial.println("Timeout: Command Bytes"); //THIS WAS CHANGED
+      cli();
       return;
-    }
+    }*/
     prevState = currentState;
   }
 
@@ -247,9 +247,9 @@ void readDrive(){
       return;
     }
   } //wait for the host to raise CMD
-  DDRL = B00000000; //set the bus into input mode
+  DDRF = B00000000; //set the bus into input mode
   currentTime = 0;
-  while(PINL != 0x55){ //wait for the host to respond with an 0x55 and timeout if it doesn't
+  while(PINF != 0x55){ //wait for the host to respond with an 0x55 and timeout if it doesn't
     currentTime++;
     if(currentTime >= timeout){
       sei();
@@ -629,8 +629,8 @@ void readDrive(){
     delay(1);
     cli();
   }
-  DDRL = B11111111; //set the bus into output mode
-  PORTL = 0x00; //and put the first status byte on the bus.
+  DDRF = B11111111; //set the bus into output mode
+  PORTF = 0x00; //and put the first status byte on the bus.
   index = 0; //clear out the index
   for(byte *i = data - 4; i < data; i++){
     *i = 0x00;
@@ -639,11 +639,11 @@ void readDrive(){
   //startTime = millis();
   currentTime = 0;
   byte *pointer = data - 4; //make the pointer point to the data array
-  PORTL = *pointer++; //put the first data byte on the bus and increment the value of the pointer
+  PORTF = *pointer++; //put the first data byte on the bus and increment the value of the pointer
   while((PINC & B00000001) == B00000001){ //do this for each of the remaining data bytes
     currentState = PINC & B00001000;
     if(currentState == B00000000 and prevState == B00001000){ //if we're on the falling edge of the strobe, put the next data byte on the bus and increment the pointer
-      PORTL = *pointer++;
+      PORTF = *pointer++;
     }
     /*currentTime++;
     if(currentTime >= timeout){
@@ -669,9 +669,9 @@ void writeDrive(byte response){
       return;
     }
   } //wait for the host to raise CMD
-  DDRL = B00000000; //set the bus into input mode
+  DDRF = B00000000; //set the bus into input mode
   currentTime = 0;
-  while(PINL != 0x55){ //wait for the host to respond with an 0x55 and timeout if it doesn't
+  while(PINF != 0x55){ //wait for the host to respond with an 0x55 and timeout if it doesn't
     currentTime++;
     if(currentTime >= timeout){
       sei();
@@ -689,7 +689,7 @@ void writeDrive(byte response){
   while((PINC & B00000001) == B00000001){ //do this for each of the 532 bytes that we're receiving
     currentState = PINC & B00001000;
     if(currentState == B00000000 and prevState == B00001000){ //when we detect a falling edge on the strobe line, read the data bus, save it contents into the data array, and increment the pointer
-      *pointer++ = PINL;
+      *pointer++ = PINF;
     }
     /*currentTime++;
     if(currentTime >= timeout){
@@ -722,9 +722,9 @@ void writeDrive(byte response){
       return;
     }
   } //wait for the host to raise CMD
-  DDRL = B00000000; //set the bus into input mode
+  DDRF = B00000000; //set the bus into input mode
   currentTime = 0;
-  while(PINL != 0x55){ //wait for the host to respond with an 0x55 and timeout if it doesn't
+  while(PINF != 0x55){ //wait for the host to respond with an 0x55 and timeout if it doesn't
     currentTime++;
     if(currentTime >= timeout){
       sei();
@@ -1002,14 +1002,14 @@ void writeDrive(byte response){
     cli();
   }
   clearBSY(); //if things look good, raise BSY
-  DDRL = B11111111; //and set the bus into output mode
+  DDRF = B11111111; //and set the bus into output mode
   currentTime = 0;
   index = 0; //zero out the index
-  PORTL = 0x00; //and put the first status byte on the bus
+  PORTF = 0x00; //and put the first status byte on the bus
   while((PINC & B00000001) == B00000001){ //do this for the remaining three status bytes
     currentState = PINC & B00001000;
     if(currentState == B00000000 and prevState == B00001000){ //if we're on the falling edge of the strobe, send the next status byte and increment the index
-      PORTL = 0x00;
+      PORTF = 0x00;
       index += 1;
     }
     currentTime++;
@@ -1026,19 +1026,19 @@ void writeDrive(byte response){
 void initPins(){
   DDRC = B11000010; //set CHK, OCD, and BSY to outputs and the rest of the control signals to inputs
   clearBSY(); //make sure that BSY is raised
-  DDRL = B00000000; //set the bus to input mode
+  DDRF = B00000000; //set the bus to input mode
   setPCHK();
   setPOCD(); //and lower CHK and OCD (is this really necessary?)
 }
 
 void sendData(byte parallelBits){ //makes it more user-friendly to put data on the bus
-  DDRL = B11111111; //set the bus to output mode
-  PORTL = parallelBits; //and write the parallelBits to the bus
+  DDRF = B11111111; //set the bus to output mode
+  PORTF = parallelBits; //and write the parallelBits to the bus
 }
 
 byte receiveData(){ //makes it more user-friendly to receive data
-  DDRL = B00000000; //set the bus to input mode
-  return PINL; //and return whatever's on the bus
+  DDRF = B00000000; //set the bus to input mode
+  return PINF; //and return whatever's on the bus
 }
 
 void updateSpareTable(){
