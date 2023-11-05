@@ -1,5 +1,5 @@
 //***********************************************************************************
-//* ArduinoFile ProFile Diagnostic Software                                         *
+//* ArduinoFile ProFile Diagnostic Software v1.0                                    *
 //* By: Alex Anderson-McLeod                                                        *
 //* Email address: alexelectronicsguy@gmail.com                                     *
 //***********************************************************************************
