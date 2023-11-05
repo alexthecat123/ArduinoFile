@@ -1,5 +1,5 @@
 //***********************************************************************************
-//* ArduinoFile ProFile Emulator Software v1.2                                      *
+//* ArduinoFile ProFile Emulator Software v1.0                                      *
 //* By: Alex Anderson-McLeod                                                        *
 //* Email address: alexelectronicsguy@gmail.com                                     *
 //***********************************************************************************
