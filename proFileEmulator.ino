@@ -260,7 +260,7 @@ void readDrive(){
       return;
     }
   }
-  byteNum = (commandBuffer[1] << 16 | commandBuffer[2] << 8 | commandBuffer[3]);
+  byteNum = ((uint32_t)commandBuffer[1] << 16 | (uint32_t)commandBuffer[2] << 8 | (uint32_t)commandBuffer[3]);
   if(commandBuffer[1] == 0xFF and commandBuffer[2] == 0xFF and commandBuffer[3] == 0xFF){
     for(int i = 0; i < 48; i++){
       data[i] = spareTable[i];
@@ -736,7 +736,7 @@ void writeDrive(byte response){
     }
   }
   bool halt = false;
-  byteNum = (commandBuffer[1] << 16 | commandBuffer[2] << 8 | commandBuffer[3]);
+  byteNum = ((uint32_t)commandBuffer[1] << 16 | (uint32_t)commandBuffer[2] << 8 | (uint32_t)commandBuffer[3]);
   if(commandBuffer[1] == 0xFF and commandBuffer[2] == 0xFF and commandBuffer[3] == 0xFD and commandBuffer[4] == 0xFE and commandBuffer[5] == 0xAF){ //built-in command
     sei();
     if(data[0] == 0x48 and data[1] == 0x41 and data[2] == 0x4C and data[3] == 0x54){ //halt
