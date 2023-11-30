@@ -114,9 +114,9 @@ String inputCommand;
 String name;
 char userInput;
 
-const int red = 39;
-const int green = 40;
-const int blue = 41;
+const int red = 22;
+const int green = 23;
+const int blue = 24;
 
 void setup(){
   pinMode(red, OUTPUT);
