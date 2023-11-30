@@ -51,9 +51,9 @@ uint32_t uptime = 0; //if this isn't originally zero, then it resets each time w
 //byte KVKey[20];
 //byte CorrectKVKey[20] = {0x6D, 0x75, 0x6F, 0x97, 0xCD, 0xDA, 0xDE, 0x35, 0xF2, 0x4E, 0x6B, 0xA5, 0x88, 0x2F, 0x1A, 0x28, 0x34, 0x5B, 0x2D, 0xFA};
 
-const int red = 39;
-const int green = 40;
-const int blue = 41;
+const int red = 22;
+const int green = 23;
+const int blue = 24;
 
 void setup(){
   setLEDColor(1, 0, 0);
