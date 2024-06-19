@@ -3,8 +3,8 @@ An Arduino-based device for testing and emulating ProFile hard drives.<br>
 <br>
 ![IMG_3865](https://user-images.githubusercontent.com/16897189/146275356-bb4e56cd-9843-4474-87db-e54e72f25cec.jpeg)
 
-## VERY IMPORTANT WARNING
-The ArduinoFile emulator mode will only work with Lisa 2/5 systems (no 2/10 support). The Arduino is already being pushed to its limits on the 2/5, but the faster-clocked VIAs on the 2/10 are just too much for it and it can't keep up with the /STRB pulses from the Lisa. I'm planning on fixing this by upgrading to a much faster Teensy microcontroller, but I'm pretty busy with college right now (and the 5V-tolerant Teensies also seem to be out of stock), so I'm not sure when that will happen. If anyone with more software development experience than me wants to try and optimize the current code to get things working on the 2/10, go for it and let me know the results!
+## An Important Note
+ArduinoFile emulator mode support on the Lisa 2/10 is experimental at the moment. The emulator was previously nonfunctional on the 2/10 because of its faster transfer speeds that the Arduino couldn't keep up with, but it's now just barely fast enough after some optimizations if you use the code and PCB found in the 2/10-Testing branch. But this is still experimental (although it appears to be pretty solid), so just keep that in mind!ZzZZZZZzzzzzzzzzz
 
 ## Introduction
 I recently built myself a USBWidEx to troubleshoot one of my ProFile hard drives and I'm really happy with it, but I found the surface-mount soldering to be really difficult (I fried three chips in the process) and the Renesas processors used in the device aren't made anymore, so I wanted a cheaper and more simplistic solution.
