@@ -1,6 +1,9 @@
 # ArduinoFile
 An Arduino-based device for testing and emulating ProFile hard drives.<br>
-<br>
+
+## This repository is now deprecated!
+As of 1/20/2025, ArduinoFile is now deprecated, and I probably won't be updating this repo anymore unless people really want me to make some really minor bug fix or add a minor feature. But the good news is that I've developed an ArduinoFile replacement! It's called [ESProFile](https://github.com/alexthecat123/ESProFile), and it's better than ArduinoFile in literally every way. Go and check it out; I'd highly recommend building one!
+
 ![IMG_3865](https://user-images.githubusercontent.com/16897189/146275356-bb4e56cd-9843-4474-87db-e54e72f25cec.jpeg)
 
 ## An Important Note
