@@ -202,7 +202,6 @@ void loop() {
     printDataNoSpace(commandBuffer[i]);
   }
   Serial.println();
-  delay(1);
   cli();
 
   if(commandBuffer[0] == 0x00){
